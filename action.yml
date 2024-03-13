@@ -1,0 +1,27 @@
+name: Track Deploy
+description: "Track deployment related metrics. Requires curl to run."
+
+inputs:
+  project:
+    required: true
+    description: "Project name to track deployments for."
+  environment:
+    required: true
+    description: "Environment being deployed, e.g. staging, production."
+  metrics_deployment_webhook_url:
+    required: true
+    description: ""
+  metrics_webhook_token:
+    required: true
+    description: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Report deployment
+      shell: bash
+      run: |
+        status_code=$(curl -o /dev/null -s -w "%{http_code}\n" -X POST -H "Authorization: Token ${{ inputs.metrics_webhook_token }}" -H "Content-Type: application/json" -d '{"project":"${{ inputs.project }}","version_identifier":"${{ github.sha }}","environment":"${{ inputs.environment }}","link":"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' ${{ inputs.metrics_deployment_webhook_url }})
+        if [[ "$status_code" -ne 200 ]] && [[ "$status_code" -ne 201 ]] ; then
+          exit 1;
+        fi
