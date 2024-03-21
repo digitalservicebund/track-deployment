@@ -6,7 +6,7 @@ This GHA is used to generate the "Deployment Frequency" metric in our Engineerin
 
 ```yaml
 - name: Report Deployment
-  uses: digitalservicebund/github-actions/track-deployment@34a48d29a9c4cc2fd6710b8eb37e13618a08fa88
+  uses: digitalservicebund/track-deployment@LATEST_HASH
   with:
     project: PROJECT_NAME
     environment: ENVIRONMENT
